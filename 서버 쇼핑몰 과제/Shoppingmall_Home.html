@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- <link rel="stylesheet" type="text/css" href="1주차 과제.css"> -->
+
+     <!-- JS -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+         crossorigin="anonymous"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+         crossorigin="anonymous"></script>
+    
+    <link rel = 'stylesheet' href="{{url_for('static', filename='Shoppingmall_style.css')}}">
+
+
+
+    <title>Hello, world!</title>
+</head>
+
+<script type = "text/javascript">
+
+$(document).ready(function () {
+    $('#orders-box').html('');
+    bring_order();
+});
+
+function make_order(){
+    let name_give = $('#name').val();
+    let add_give = $('#add').val();
+    let number_give = $('#number').val();
+    let count_give = $('#count').val();
+
+    if (name_give ==''){
+        alert ('이름을 입력하세요!');
+        $('#name').focus();
+        return
+        } else if (count_give ==''){
+        alert ('수량을 입력하세요!');
+        $('#count').focus();
+        return
+        } else if (add_give ==''){
+        alert ('주소를 입력하세요!');
+        $('#add').focus();
+        return
+        } else if(number_give ==''){
+        alert ('전화번호를 입력하세요!');
+        $('#number').focus();
+        return
+        }
+
+        let data_info = 
+        {'name_give': name_give,
+         'count_give': count_give,
+         'add_give': add_give,
+         'number_give': number_give,};
+        
+         $.ajax({
+             type: "POST",
+             url: "/orders",
+             data: data_info,
+             success: function (response) {
+                 if(response['result']=='success'){
+                     alert(response['msg']);
+                    window.location.reload();
+                 }}});}
+
+
+
+function bring_order(){
+$.ajax({
+    type: "GET",
+    url: "/orders",
+    data: {},
+    success: function (response) {
+
+        let orders = response['orders'];
+        for (let i=0; i<orders.length; i++){
+        let order = orders[i];
+        let name = order['name'];
+        let count = order['count'];
+        let add = order['add'];
+        let number = order['number'];
+        console.log(name, count, add, number);
+
+        add_info(name, count, add, number);}}})
+
+
+function add_info(name, count, add, number,){
+    let temp_html = 
+
+    '<tr>\
+                    <td>' + name + '</td>\
+                    <td>' + count + '</td>\
+                    <td>' + add + '</td>\
+                    <td>' + number + '</td>\
+                </tr>';
+
+$('#orders-box').append(temp_html);}}
+
+
+
+
+
+// 1. 이 안에서 값 만들어서 DATA 만들기 --> Ajax로 보내기, 붙이기
+// 2. 그 값 가져오는 GET 함수 만들기
+// 3. 시작할 때 입력값 지우고 여태까지 DATA 가져오기
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+<body>
+    <div class="first_half">
+        <div>
+            <img src='https://img.danawa.com/cp_images/service/139/3429536/150181760385357365231.jpg'></img>
+        </div>
+        <div>
+            <p>
+                <h1>
+                    기계식 키보드를 팝니다.
+                </h1>
+                <h3>가격 : 75,000원</h5>
+            </p>
+            <p>
+                <h5>키감과 화려한 백라이트가 장착된 기계식 키보드를 팝니다.</h5>
+
+            </p>
+        </div>
+    </div>
+
+    <div class="second_half">
+        <h5>주문하기</h5>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">주문자 성함</span>
+            </div>
+            <input type="text" id="name"  class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm">
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">주소</span>
+            </div>
+            <input type="text" id="add" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm">
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">전화번호</span>
+            </div>
+            <input type="text" id="number" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm">
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">수량</label>
+            </div>
+            <select class="custom-select" id="count">
+                <option selected>Choose...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+
+        
+        <button type="button" onclick= "make_order()" class="btn btn-primary">주문하기</button>
+
+        <div>
+        <table class ="table">
+            <thread>
+                <tr>
+                    <th scope="col">이름</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">주소</th>
+                    <th scope="col">전화번호</th>   
+                </tr>
+
+            </thread>
+            <tbody id="orders-box">
+                <tr>
+                    <td>이름</td>
+                    <td>수량</td>
+                    <td>주소</td>
+                    <td>전화번호</td>
+                </tr>
+
+            </tbody>
+
+
+
+        </table></div>
+
+
+
+
+    </div>
+
+</body>
+</html>
